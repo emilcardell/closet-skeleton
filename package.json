@@ -1,0 +1,22 @@
+{
+  "name": "closet-skeleton",
+  "version": "1.0.0",
+  "description": "A skeleton site with login",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Emil Cardell",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.14.2",
+    "bunyan": "^1.5.1",
+    "express": "^4.13.3",
+    "install": "^0.4.1",
+    "iz": "^0.7.1",
+    "mongodb": "^2.0.52",
+    "npm": "^3.5.2",
+    "passport": "^0.3.2"
+  }
+}
