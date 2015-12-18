@@ -18,5 +18,9 @@
     "mongodb": "^2.0.52",
     "npm": "^3.5.2",
     "passport": "^0.3.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^4.1.6",
+    "eslint": "^1.10.3"
   }
 }
