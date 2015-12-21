@@ -15,9 +15,11 @@
     "express": "^4.13.3",
     "install": "^0.4.1",
     "iz": "^0.7.1",
-    "mongodb": "^2.0.52",
+    "mailgun-js": "^0.7.7",
     "npm": "^3.5.2",
-    "passport": "^0.3.2"
+    "passport": "^0.3.2",
+    "promised-mongo": "^1.2.0",
+    "shortid": "^2.2.4"
   },
   "devDependencies": {
     "babel-eslint": "^4.1.6",
