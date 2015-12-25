@@ -31,6 +31,7 @@ const sendEmail = function(emailToSend) {
     if(emailToSend.from){
         sender = emailToSend.from;
     }
+
     let mailOptions = {
         from: sender, // sender address
         to: emailToSend.to, // list of receivers
