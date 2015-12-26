@@ -1,9 +1,9 @@
 "use strict";
 module.export = {
-    mode: 'desvelopment',
+    mode: 'development',
     mail: {
         username: 'key-XXXXXXXXXXXXXXXXXXXXXXX',
         password: 'mydomain.mailgun.org',
-        systemEmail: "my@mailadress.com"
+        systemEmail: 'my@mailadress.com'
     }
 };

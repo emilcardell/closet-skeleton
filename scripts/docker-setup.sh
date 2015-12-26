@@ -2,7 +2,7 @@ if docker ps -a | grep -q applicationdb; then
 		echo "applicationdb EXISTS";
 	else
     	echo "INSTALLING applicationdb";
-		docker run --name applicationdb -p 5432:5432 -d mongo
+		docker run --name applicationdb -p 27017:27017 -d mongo
 fi
 
 if docker ps -a | grep -q  rapids-rabbit; then
