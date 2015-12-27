@@ -30,5 +30,6 @@
       "space-before-blocks": 1
   },
   "globals": {
+      "document": true
   }
 }

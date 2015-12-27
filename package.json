@@ -21,7 +21,7 @@
     "npm": "^3.5.2",
     "passport": "^0.3.2",
     "promised-mongo": "^1.2.0",
-    "shortid": "^2.2.4"
+    "uuid": "^2.0.1"
   },
   "devDependencies": {
     "babel-eslint": "^4.1.6",
@@ -35,8 +35,10 @@
       "baseURL": "static"
     },
     "dependencies": {
+      "emilcardell/iz": "github:emilcardell/iz@^0.7.1",
       "github/fetch": "github:github/fetch@^0.10.1",
-      "react": "npm:react@^0.14.3"
+      "react": "npm:react@^0.14.3",
+      "react-dom": "npm:react-dom@^0.14.3"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",

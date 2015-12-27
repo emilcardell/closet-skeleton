@@ -3,23 +3,17 @@
 // bcryp password
 // add extra fields
 // authentisera e-mail
-const validationSummarizer = require('./utils/validationSummarizer.js');
 const logger = require('./utils/logger.js');
-const bcrypt = require('bcrypt-nodejs');
 const iz = require('iz');
 const mongoDb = require('./utils/mongoConnection.js');
-const shortid = require('shortid');
-
-const saltRounds = 1000;
+const uuid = require('uuid');
 
 module.exports = function(app) {
 
     app.post('/api/user/createUser', (req, resp) => {
         let createUserRequest = req.body;
-        let requestValidationResult = { errors: [], valid: true };
 
-        requestValidationResult = validationSummarizer(requestValidationResult, iz(createUserRequest.email).required().email());
-        requestValidationResult = validationSummarizer(requestValidationResult, iz(createUserRequest.password).required().minLength(6).maxLength(1024));
+        let requestValidationResult = iz(createUserRequest.email).required().email();
 
         if (!requestValidationResult.valid) {
             logger.info(requestValidationResult.error);
@@ -32,10 +26,10 @@ module.exports = function(app) {
         let db = mongoDb('users');
         db.users.findOne({
             emailKey: emailKey
-        }).then(function(doc) {
-            if (doc) {
+        }).then(function(user) {
+            if (user) {
 
-                if ( doc.isAuthenticated ) {
+                if ( user.isAuthenticated ) {
                     resp.json( { errorMessage: 'User already exist' } ).sendStatus(409);
                     logger.info(`User with e-mail ${emailKey} already exist`);
                     return;
@@ -44,15 +38,13 @@ module.exports = function(app) {
                 //Resend e-mail.
             }
 
-            let salt = bcrypt.genSaltSync(saltRounds);
             let newUser = {
                 emailKey: emailKey,
                 email: createUserRequest.email,
-                passwordHash: bcrypt.hashSync(newUser.password, salt),
-                created: new Date(),
+                accountType: createUserRequest.accountType,
                 isAuthenticated: false,
                 isAdmin: false,
-                authId: shortid.generate()
+                authId: uuid.v4()
             };
 
             db.users.save(newUser);
