@@ -38,7 +38,8 @@
       "emilcardell/iz": "github:emilcardell/iz@^0.7.1",
       "github/fetch": "github:github/fetch@^0.10.1",
       "react": "npm:react@^0.14.3",
-      "react-dom": "npm:react-dom@^0.14.3"
+      "react-dom": "npm:react-dom@^0.14.3",
+      "underscore": "npm:underscore@^1.8.3"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",

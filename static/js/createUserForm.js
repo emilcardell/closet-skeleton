@@ -12,7 +12,10 @@ const CreateUserForm = React.createClass({
     handleSubmit(e) {
         e.preventDefault();
 
-        let validationResult = iz(this.state.email).required().email();
+        let validationResult = iz('humbug').required().email();
+        if (!validationResult.valid) {
+            //show validation errors.
+        }
         console.log(validationResult);
 
         //validate
