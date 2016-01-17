@@ -30,6 +30,7 @@
       "space-before-blocks": 1
   },
   "globals": {
-      "document": true
+      "document": true,
+      "fetch": true
   }
 }

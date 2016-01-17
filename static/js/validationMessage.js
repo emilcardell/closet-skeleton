@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'underscore';
 
 const ValidationMessage = React.createClass({
     render() {
@@ -9,22 +8,17 @@ const ValidationMessage = React.createClass({
         }
 
         let inputName = this.props.inputName;
-        let text = this.props.text;
-
-        let foundErrors = _(validationResult.errors).find((error) => {
-            return error.field === inputName;
-        });
-
-        if (foundErrors.length > 0) {
-            if (!text) {
-                text = '';
-                foundErrors.forEach((error) => {
-                    text += error;
-                });
-            }
+        if (!validationResult[inputName]) {
+            return null;
         }
 
-        return (<div className="validation-error-message">{{ text }}</div>);
+        let fieldResult = validationResult[inputName];
+        let text = [];
+        fieldResult.forEach((errorMessage) => {
+            text.push(<span className="validation-errors__message" key={errorMessage}>{ errorMessage }</span>);
+        });
+
+        return (<div className="validation-errors">{ text }</div>);
     }
 });
 
