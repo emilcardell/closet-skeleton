@@ -5,7 +5,7 @@ if docker ps -a | grep -q applicationdb; then
 		docker run --name applicationdb -p 27017:27017 -d mongo
 fi
 
-if docker ps -a | grep -q  rapids-rabbit; then
+if docker ps -a | grep -q  logdb; then
 		echo "logdb EXISTS";
 	else
     	echo "INSTALLING  logdb";
