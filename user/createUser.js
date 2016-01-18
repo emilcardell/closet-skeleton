@@ -1,12 +1,10 @@
 "use strict";
-// Only validate email and password.
-// bcryp password
-// add extra fields
-// authentisera e-mail
-const logger = require('./utils/logger.js');
+const logger = require('../utils/logger.js');
 const iz = require('iz');
-const mongoDb = require('./utils/mongoConnection.js');
+const mongoDb = require('../utils/mongoConnection.js');
 const uuid = require('uuid');
+const sendEmail = require('../utils/sendEmail.js');
+const config = require('../config.js');
 
 module.exports = function(app) {
 
@@ -30,39 +28,42 @@ module.exports = function(app) {
             if (user) {
 
                 if ( user.isAuthenticated ) {
-                    resp.json( { errorMessage: 'User already exist' } ).sendStatus(409);
+                    resp.json( { errorMessage: 'User already exist' } ).status(409).end();
                     logger.info(`User with e-mail ${emailKey} already exist`);
                     return;
                 }
-
                 //Resend e-mail.
+                resp.json({}).status(200).end();
+                return;
             }
-
             let newUser = {
                 emailKey: emailKey,
                 email: createUserRequest.email,
                 accountType: createUserRequest.accountType,
                 isAuthenticated: false,
                 isAdmin: false,
+                isDeleted: false,
+                created: new Date(),
                 authId: uuid.v4()
             };
-
+            config.adminEmails.forEach((email) => {
+                console.log(newUser.emailKey);
+                console.log(email);
+                if (newUser.emailKey === email) {
+                    newUser.isAdmin = true;
+                }
+            });
             db.users.save(newUser);
-            //send e-mail
+
+            sendEmail.sendEmail({
+                to: newUser.email,
+                subject: 'Authenticate user',
+                template: 'authenticateUser',
+                context: { url: config.hostUrl + '/authenticateUser/' + newUser.authId }
+            });
+
+            resp.json({}).status(200).end();
 
         });
     });
-
-/*
-    app.post('/someUrl', () =>{
-
-        db.mycollection.findAndModify({
-        	query: { name: 'mathias' },
-        	update: { $set: { tag:'maintainer' } },
-        	new: true
-        })
-        .then(function(doc) {
-        	// doc.tag === 'maintainer'
-        });
-    } )*/
 };

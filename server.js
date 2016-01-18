@@ -11,6 +11,10 @@ app.get('/', (req, resp) => {
     resp.json( { message: "Server is running. Rejoice!" } );
 });
 
+require('./utils/sendEmail.js').setUp();
+require('./user/createUser.js')(app);
+require('./user/authenticateUser.js')(app);
+
 let server = null;
 
 exports.start = function() {

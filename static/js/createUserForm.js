@@ -64,10 +64,16 @@ const CreateUserForm = React.createClass({
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(createModel)
-        }).then(() => {
-            //Show nice message.
+        }).then((response) => {
+
+            if (response.status !== 200) {
+                this.setState({
+                    showServerErrorMessage: true
+                });
+            }
+
             this.setState({
-                showThankYouMessage: false
+                showThankYouMessage: true
             });
         }).catch(() => {
             this.setState({

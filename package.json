@@ -18,7 +18,8 @@
     "iz": "^0.7.1",
     "nodemailer": "^1.10.0",
     "nodemailer-express-handlebars": "^1.0.0",
-    "npm": "^3.5.2",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "npm": "^3.5.3",
     "passport": "^0.3.2",
     "promised-mongo": "^1.2.0",
     "uuid": "^2.0.1"

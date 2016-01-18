@@ -3,18 +3,26 @@ const nodemailer = require('nodemailer');
 const nodemailerHandlebars = require('nodemailer-express-handlebars');
 const handlebars = require('express-handlebars');
 const path = require('path');
-const logger = require('./utils/logger.js');
+const logger = require('../utils/logger.js');
+const config = require('../config.js');
+var sgTransport = require('nodemailer-sendgrid-transport');
 
 
 let currentTransporter = null;
 
-const setUp = function(transporter) {
-    currentTransporter = transporter;
+const setUp = function() {
+    var options = {
+        auth: {
+            api_key: config.email.sendGridKey
+        }
+    }
+
+    currentTransporter = nodemailer.createTransport(sgTransport(options));
 
     let viewEngine = handlebars.create({});
     let viewEngineOptions = nodemailerHandlebars({
         viewEngine: viewEngine,
-        viewPath: path.resolve(__dirname, 'emailTemplates')
+        viewPath: path.resolve(__dirname, '../emailTemplates')
     });
 
     currentTransporter.use('compile', viewEngineOptions);
@@ -30,6 +38,12 @@ const sendEmail = function(emailToSend) {
     let sender = 'donotreply@mydomain.com';
     if(emailToSend.from){
         sender = emailToSend.from;
+    } else {
+        sender = config.email.defaultFromEmail
+    }
+
+    if(config.mode === 'development') {
+        emailToSend.to = config.email.defaultToEmail;
     }
 
     let mailOptions = {
@@ -58,8 +72,7 @@ const sendEmail = function(emailToSend) {
 };
 
 
-module.export = {
+module.exports = {
     setUp: setUp,
-    sendEmail: sendEmail,
-    setGlobalListner:
-}
+    sendEmail: sendEmail
+};
