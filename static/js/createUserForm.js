@@ -2,8 +2,8 @@ import React from 'react';
 import iz from 'emilcardell/iz';
 import are from 'emilcardell/iz/src/are';
 import 'github/fetch';
-import ValidationMessage from 'js/validationMessage';
-import ValidationClassHelper from 'js/ValidationClassHelper';
+import ValidationMessage from '/js/validationMessage';
+import ValidationClassHelper from '/js/ValidationClassHelper';
 
 const createUserRules = {
     'email': [
@@ -94,7 +94,7 @@ const CreateUserForm = React.createClass({
 
         return (<form onSubmit={this.handleSubmit} noValidate>
           <div className="row">
-              <label htmlFor="exampleEmailInput">Your email</label>
+              <label htmlFor="emailField">Your email</label>
               <input className={ ValidationClassHelper("u-full-width", 'email', this.state.validationResult) } type="email" placeholder="Enter your e-mail here." id="emailField" onChange={this.handleEmailChange} value={this.state.email} required />
               <ValidationMessage validationResult={this.state.validationResult} inputName="email" text="You have to enter a valid e-mailaddress."></ValidationMessage>
 

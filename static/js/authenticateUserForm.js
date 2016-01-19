@@ -1,0 +1,188 @@
+import React from 'react';
+import iz from 'emilcardell/iz/src/iz';
+import are from 'emilcardell/iz/src/are';
+import 'github/fetch';
+import ValidationMessage from '/js/validationMessage';
+import ValidationClassHelper from '/js/ValidationClassHelper';
+
+
+
+const AuthenticateUserForm = React.createClass({
+    getInitialState() {
+        return {
+            fullName: null,
+            password: null,
+            passwordVerification: null,
+            validationResult: {},
+            showLoader: true,
+            showUserNotFound: false,
+            showForm: false,
+            authId: null
+        };
+    },
+    handleFieldChange(event) {
+        let values = {};
+        values[event.target.id] = event.target.value;
+        this.setState( values);
+    },
+    handleSubmit(event) {
+        event.preventDefault();
+
+
+
+        let authenticateUserRules = {
+            'fullName': [
+                {
+                    'rule': 'required',
+                    'error': 'You must enter your name.'
+                }
+            ],
+            'password': [
+                {
+                    'rule': 'required',
+                    'error': 'A password is requered to get access.'
+                },
+                {
+                    'rule': 'minLength',
+                    'args': [6],
+                    'error': 'Password must be between 6 and 1000 characters.'
+                },
+                {
+                    'rule': 'maxLength',
+                    'args': [1024],
+                    'error': 'Password must be between 6 and 1000 characters.'
+                }
+            ],
+            'passwordVerification': [
+                {
+                    'rule': 'required',
+                    'error': 'You have to verify your password.'
+                },
+                {
+                    'rule': 'equal',
+                    'args': [this.state.password],
+                    'error': 'Passwords dosent match'
+                }
+            ]
+        };
+
+        let areRules = are(authenticateUserRules);
+        let modelToSave = { fullName: this.state.fullName, password: this.state.password, passwordVerification: this.state.passwordVerification };
+        console.log(modelToSave);
+        if (!areRules.validFor(modelToSave)) {
+            this.setState({
+                validationResult: areRules.getInvalidFields()
+            });
+            return;
+        }
+
+    },
+
+        /*
+        event.preventDefault();
+        let createModel = {
+            email: this.state.email,
+            accountType: this.state.accountType
+        };
+
+        let areRules = are(createUserRules);
+
+        if (!areRules.validFor(createModel)) {
+            this.setState({
+                validationResult: areRules.getInvalidFields()
+            });
+            return;
+        }
+
+        fetch('/api/user/createUser', {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(createModel)
+        }).then((response) => {
+
+            if (response.status !== 200) {
+                this.setState({
+                    showServerErrorMessage: true
+                });
+            }
+
+            this.setState({
+                showThankYouMessage: true
+            });
+        }).catch(() => {
+            this.setState({
+                showServerErrorMessage: true
+            });
+        });*/
+    componentDidMount() {
+        let paths = window.location.pathname.split("/");
+        let authId = paths[paths.length-1];
+
+        fetch('/api/user/createUser/' + authId).then((response) => {
+            if (response.status !== 200) {
+                this.setState({
+                    showUserNotFound: true,
+                    showLoader: false
+                });
+            }
+
+            this.setState({
+                showForm: true,
+                showLoader: false,
+                authId: authId
+            });
+        }).catch(() => {
+            this.setState({
+                showUserNotFound: true,
+                showLoader: false
+            });
+        });
+    },
+    render() {
+
+        if (this.state.showLoader) {
+            return(<div className="spinner">
+                      <div className="bounce1"></div>
+                      <div className="bounce2"></div>
+                      <div className="bounce3"></div>
+                    </div>);
+        }
+
+        if (this.state.showUserNotFound) {
+            return (<div><h4>Something did not go as planed.</h4>
+            <p>Either your account has already been created or a serious error has occured.</p></div>);
+        }
+
+        let serverErrorMessage = '';
+        if (this.state.showServerErrorMessage) {
+            serverErrorMessage = <div className="server-error-messge">Something went wrong on the server please try again later.</div>;
+        }
+
+        return (<form onSubmit={this.handleSubmit} noValidate>
+          <div className="row">
+              <h4>Almost there</h4>
+              <p>We need some more information to get started.</p>
+
+              <label htmlFor="fullName">Full Name</label>
+              <input className={ ValidationClassHelper("u-full-width", 'fullName', this.state.validationResult) } type="text" placeholder="Your full name here." id="fullName" onChange={this.handleFieldChange} value={this.state.fullName} required />
+              <ValidationMessage validationResult={this.state.validationResult} inputName="fullName"></ValidationMessage>
+
+              <label htmlFor="password">Password</label>
+              <input className={ ValidationClassHelper("u-full-width", 'email', this.state.validationResult) } type="password" placeholder="Password goes here." id="password" onChange={this.handleFieldChange} value={this.state.password} required />
+              <ValidationMessage validationResult={this.state.validationResult} inputName="password" ></ValidationMessage>
+
+              <label htmlFor="passwordVerification">Verify password</label>
+              <input className={ ValidationClassHelper("u-full-width", 'email', this.state.validationResult) } type="password" placeholder="Check password again." id="passwordVerification" onChange={this.handleFieldChange} value={this.state.passwordVerification} required />
+              <ValidationMessage validationResult={this.state.validationResult} inputName="passwordVerification"></ValidationMessage>
+
+              <input className="button-primary u-full-width" type="submit" value="Submit" />
+              { serverErrorMessage }
+          </div>
+        </form>);
+    }
+});
+
+export default AuthenticateUserForm;

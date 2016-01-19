@@ -23,6 +23,22 @@
         });
 
         app.get('/authenticateUser/:authtid', (req, resp) => {
+            resp.render('authenticateUser', {});
+        });
+
+        app.get('/api/user/createUser/:authtid', (req, resp) => {
+            let db = mongoDb('users');
+            db.users.find({ authId: req.params.authtid, isAuthenticated: false, isDeleted: false })
+            .then(function(doc) {
+                if (doc.length === 0) {
+                    resp.status(404).end();
+                }
+
+                resp.status(200).end();
+            });
+        });
+
+        app.post('/api/user/createUser', (req, resp) => {
             let db = mongoDb('users');
 
             db.users.findAndModify({

@@ -3,6 +3,10 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const logger = require('./utils/logger.js');
+const exphbs = require('express-handlebars');
+
+app.engine('handlebars', exphbs({ defaultLayout: 'public' }));
+app.set('view engine', 'handlebars');
 
 app.use('/', express.static('static'));
 app.use(bodyParser.json());
