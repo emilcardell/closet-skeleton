@@ -28,8 +28,6 @@ const AuthenticateUserForm = React.createClass({
     handleSubmit(event) {
         event.preventDefault();
 
-
-
         let authenticateUserRules = {
             'fullName': [
                 {
@@ -68,7 +66,6 @@ const AuthenticateUserForm = React.createClass({
 
         let areRules = are(authenticateUserRules);
         let modelToSave = { fullName: this.state.fullName, password: this.state.password, passwordVerification: this.state.passwordVerification };
-        console.log(modelToSave);
         if (!areRules.validFor(modelToSave)) {
             this.setState({
                 validationResult: areRules.getInvalidFields()
@@ -76,52 +73,35 @@ const AuthenticateUserForm = React.createClass({
             return;
         }
 
-    },
+        modelToSave.authId = this.state.authId;
 
-        /*
-        event.preventDefault();
-        let createModel = {
-            email: this.state.email,
-            accountType: this.state.accountType
-        };
+        console.log(modelToSave);
 
-        let areRules = are(createUserRules);
-
-        if (!areRules.validFor(createModel)) {
-            this.setState({
-                validationResult: areRules.getInvalidFields()
-            });
-            return;
-        }
-
-        fetch('/api/user/createUser', {
+        fetch('/api/user/authenticateUser', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(createModel)
+            body: JSON.stringify(modelToSave)
         }).then((response) => {
 
             if (response.status !== 200) {
-                this.setState({
-                    showServerErrorMessage: true
-                });
+                alert('Something went horribly wrong');
+                return;
             }
-
-            this.setState({
-                showThankYouMessage: true
-            });
+            alert('Saved ' + response.status);
+            //redirect user
         }).catch(() => {
-            this.setState({
-                showServerErrorMessage: true
-            });
-        });*/
+            alert('This should not happen.');
+        });
+
+    },
     componentDidMount() {
         let paths = window.location.pathname.split("/");
         let authId = paths[paths.length-1];
 
-        fetch('/api/user/createUser/' + authId).then((response) => {
+        fetch('/api/user/authenticateUser/' + authId).then((response) => {
             if (response.status !== 200) {
                 this.setState({
                     showUserNotFound: true,
@@ -142,6 +122,13 @@ const AuthenticateUserForm = React.createClass({
         });
     },
     render() {
+
+        let passwordMessage = null;
+        if (this.state.password && this.state.password.length > 1 && this.state.password.length < 6) {
+            passwordMessage = <div className="password-message__negative">Your password is too short.</div>;
+        } else if (this.state.password && this.state.password.length >= 6) {
+            passwordMessage = <div className="password-message__positive">Your password is ok.</div>
+        }
 
         if (this.state.showLoader) {
             return(<div className="spinner">
@@ -172,6 +159,7 @@ const AuthenticateUserForm = React.createClass({
 
               <label htmlFor="password">Password</label>
               <input className={ ValidationClassHelper("u-full-width", 'email', this.state.validationResult) } type="password" placeholder="Password goes here." id="password" onChange={this.handleFieldChange} value={this.state.password} required />
+              { passwordMessage }
               <ValidationMessage validationResult={this.state.validationResult} inputName="password" ></ValidationMessage>
 
               <label htmlFor="passwordVerification">Verify password</label>
