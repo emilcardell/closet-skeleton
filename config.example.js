@@ -2,6 +2,7 @@
 module.export = {
     mode: 'development',
     hostUrl: 'http://localhost:7771',
+    mongoConnection: 'mongodb://192.168.33.103:27017/',
     adminEmails: [
         'my@email.com'
     ],

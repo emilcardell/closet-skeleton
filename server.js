@@ -4,11 +4,13 @@ const app = express();
 const bodyParser = require('body-parser');
 const logger = require('./utils/logger.js');
 const exphbs = require('express-handlebars');
+const cookieParser = require('cookie-parser');
 
 app.engine('handlebars', exphbs({ defaultLayout: 'public' }));
 app.set('view engine', 'handlebars');
 
 app.use('/', express.static('static'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.get('/', (req, resp) => {

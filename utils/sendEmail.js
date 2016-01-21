@@ -5,17 +5,17 @@ const handlebars = require('express-handlebars');
 const path = require('path');
 const logger = require('../utils/logger.js');
 const config = require('../config.js');
-var sgTransport = require('nodemailer-sendgrid-transport');
+const sgTransport = require('nodemailer-sendgrid-transport');
 
 
 let currentTransporter = null;
 
 const setUp = function() {
-    var options = {
+    let options = {
         auth: {
             api_key: config.email.sendGridKey
         }
-    }
+    };
 
     currentTransporter = nodemailer.createTransport(sgTransport(options));
 

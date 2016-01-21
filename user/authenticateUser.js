@@ -85,7 +85,6 @@ module.exports = function(app) {
 
         let salt = bcrypt.genSaltSync(saltRounds);
         let passwordHash = bcrypt.hashSync(createUserRequest.password, salt);
-        console.log( { isAuthenticated: true, authenticated: new Date(), fullName: createUserRequest.fullName, passwordHash: passwordHash });
         db.users.findAndModify({
             query: { authId: createUserRequest.authId, isAuthenticated: false, isDeleted: false },
             update: { $set: { isAuthenticated: true, authenticated: new Date(), fullName: createUserRequest.fullName, passwordHash: passwordHash } },

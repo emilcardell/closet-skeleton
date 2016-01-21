@@ -75,8 +75,6 @@ const AuthenticateUserForm = React.createClass({
 
         modelToSave.authId = this.state.authId;
 
-        console.log(modelToSave);
-
         fetch('/api/user/authenticateUser', {
             method: 'post',
             headers: {
