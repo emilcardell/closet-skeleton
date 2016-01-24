@@ -44,7 +44,7 @@ module.exports = function(app) {
                 isAdmin: false,
                 isDeleted: false,
                 created: new Date(),
-                authId: uuid.v4()
+                emailAuthId: uuid.v4()
             };
             config.adminEmails.forEach((email) => {
                 console.log(newUser.emailKey);
@@ -59,7 +59,7 @@ module.exports = function(app) {
                 to: newUser.email,
                 subject: 'Authenticate user',
                 template: 'authenticateUser',
-                context: { url: config.hostUrl + '/authenticateUser/' + newUser.authId }
+                context: { url: config.hostUrl + '/authenticateUser/' + newUser.emailAuthId }
             });
 
             resp.json({}).status(200).end();

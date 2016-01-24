@@ -17,7 +17,7 @@ const AuthenticateUserForm = React.createClass({
             showLoader: true,
             showUserNotFound: false,
             showForm: false,
-            authId: null
+            emailAuthId: null
         };
     },
     handleFieldChange(event) {
@@ -73,7 +73,7 @@ const AuthenticateUserForm = React.createClass({
             return;
         }
 
-        modelToSave.authId = this.state.authId;
+        modelToSave.emailAuthId = this.state.emailAuthId;
 
         fetch('/api/user/authenticateUser', {
             method: 'post',
@@ -97,9 +97,9 @@ const AuthenticateUserForm = React.createClass({
     },
     componentDidMount() {
         let paths = window.location.pathname.split("/");
-        let authId = paths[paths.length-1];
+        let emailAuthId = paths[paths.length-1];
 
-        fetch('/api/user/authenticateUser/' + authId).then((response) => {
+        fetch('/api/user/authenticateUser/' + emailAuthId).then((response) => {
             if (response.status !== 200) {
                 this.setState({
                     showUserNotFound: true,
@@ -110,7 +110,7 @@ const AuthenticateUserForm = React.createClass({
             this.setState({
                 showForm: true,
                 showLoader: false,
-                authId: authId
+                emailAuthId: emailAuthId
             });
         }).catch(() => {
             this.setState({

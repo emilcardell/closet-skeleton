@@ -13,6 +13,9 @@ app.use('/', express.static('static'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+
+
+
 app.get('/', (req, resp) => {
     resp.json( { message: "Server is running. Rejoice!" } );
 });
@@ -20,6 +23,19 @@ app.get('/', (req, resp) => {
 require('./utils/sendEmail.js').setUp();
 require('./user/createUser.js')(app);
 require('./user/authenticateUser.js')(app);
+require('./user/login.js')(app);
+
+// Handle 404
+app.use(function(req, resp) {
+    resp.status(400);
+    resp.render('message_notFound');
+});
+
+// Handle 500
+app.use(function(error, req, resp) {
+    resp.status(500);
+    resp.render('message_serverError');
+});
 
 let server = null;
 

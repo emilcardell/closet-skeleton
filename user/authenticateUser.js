@@ -29,7 +29,7 @@ module.exports = function(app) {
 
     app.get('/api/user/authenticateUser/:authtid', (req, resp) => {
         let db = mongoDb('users');
-        db.users.find({ authId: req.params.authtid, isAuthenticated: false, isDeleted: false })
+        db.users.find({ emailAuthId: req.params.authtid, isAuthenticated: false, isDeleted: false })
         .then(function(doc) {
             if (doc.length === 0) {
                 resp.status(404).end();
@@ -42,10 +42,10 @@ module.exports = function(app) {
         let createUserRequest = req.body;
 
         let authenticateUserRules = {
-            'authId': [
+            'emailAuthId': [
                 {
                     'rule': 'required',
-                    'error': 'Not authId supplied.'
+                    'error': 'Not E-mail authentication id supplied.'
                 }
             ],
             'fullName': [
@@ -86,7 +86,7 @@ module.exports = function(app) {
         let salt = bcrypt.genSaltSync(saltRounds);
         let passwordHash = bcrypt.hashSync(createUserRequest.password, salt);
         db.users.findAndModify({
-            query: { authId: createUserRequest.authId, isAuthenticated: false, isDeleted: false },
+            query: { emailAuthId: createUserRequest.emailAuthId, isAuthenticated: false, isDeleted: false },
             update: { $set: { isAuthenticated: true, authenticated: new Date(), fullName: createUserRequest.fullName, passwordHash: passwordHash } },
             new: false
         })
@@ -94,7 +94,7 @@ module.exports = function(app) {
             if (doc.value) {
                 resp.status(200).end();
             } else {
-                resp.json({ doc: doc, authId: req.params.authtid }).status(500).end();
+                resp.json({ doc: doc, emailAuthId: req.params.authtid }).status(500).end();
             }
         });
 
