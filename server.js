@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const logger = require('./utils/logger.js');
 const exphbs = require('express-handlebars');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
 
 app.engine('handlebars', exphbs({ defaultLayout: 'public' }));
 app.set('view engine', 'handlebars');
@@ -13,6 +14,17 @@ app.use('/', express.static('static'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+app.use(require('express-session')({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {maxAge: 3000000}
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./user/login.js')(app);
 
 
 
@@ -23,7 +35,7 @@ app.get('/', (req, resp) => {
 require('./utils/sendEmail.js').setUp();
 require('./user/createUser.js')(app);
 require('./user/authenticateUser.js')(app);
-require('./user/login.js')(app);
+
 
 // Handle 404
 app.use(function(req, resp) {

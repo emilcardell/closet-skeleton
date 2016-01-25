@@ -7,12 +7,13 @@ const NodeCache = require( "node-cache" );
 const loginCache = new NodeCache( { stdTTL: 60, checkperiod: 120 } );
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const config = require('../config.js');
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
+//const config = require('../config.js');
+//const session = require('express-session');
+//const MongoDBStore = require('connect-mongodb-session')(session);
+const moment = require('moment');
 
 module.exports = function(app) {
-
+/*
     let mongoStore = new MongoDBStore({
         uri: config.mongoConnection,
         collection: 'passport-sessions'
@@ -22,24 +23,30 @@ module.exports = function(app) {
         logger.error(error);
     });
 
-    app.use(require('express-session')({
+    app.use(session({ secret: 'ilovescotchscotchyscotchscotch', cookie: { secure: false } })); // session secret
+    app.use(passport.initialize());
+    app.use(passport.session()); // persistent login sessions
+
+
+    app.use(session({
         secret: 'This is a secret',
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
-        },
-        store: mongoStore
-    }));
+        }
+    }));*/
 
-    app.use(passport.initialize());
-    app.use(passport.session());
 
-    let localStrategy = new LocalStrategy((username, password, done) => {
-        if (!username || !password) {
+    let localStrategy = new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
+    }, (req, email, password, done) => {
+        if (!email || !password) {
             return done(null, false, { status: 400 });
         }
 
         let db = mongoDb('users');
-        db.users.findOne({ emailKey: username.toLowerCase(), isAuthenticated: true, isDeleted: false })
+        db.users.findOne({ emailKey: email.toLowerCase(), isAuthenticated: true, isDeleted: false })
             .then(function(user) {
                 if (!user) {
                     return done(null, false, { status: 400 });
@@ -47,11 +54,14 @@ module.exports = function(app) {
 
                 bcrypt.compare(password, user.passwordHash, function(err, res) {
                     if (res) {
+
                         createAuthedCachableUser(user, db).then((cachableUser) => {
                             setUserToCacheByAuthId(cachableUser);
+                            console.log('')
                             return done(null, cachableUser);
                         }, (err) => {
                             logger.err(err);
+                            return done(null, false, { status: 500 });
                         });
 
 
@@ -60,15 +70,17 @@ module.exports = function(app) {
                     }
                 });
             });
+
     });
 
-    passport.use(localStrategy);
+    passport.use('local-login', localStrategy);
 
     passport.serializeUser(function(user, done) {
         done(null, user.AuthentcationId);
     });
 
     passport.deserializeUser(function(id, done) {
+        console.log('deserializeUser');
         let cachedValue = getUserFromCacheByAuthId(id);
 
         if (cachedValue) {
@@ -97,29 +109,19 @@ module.exports = function(app) {
     });
 
 
-    app.post('/login', function (req, resp, next) {
-        passport.authenticate('local', function (err, user, info) {
-            if (!!info && info.status && info.status > 200) {
-                return resp.send(info.status);
-            }
-
-            let redirectUrl = null;
-            req.logIn(user, function (err) {
-                if (err) {
-                    return resp.send(500);
-                }
-
-                if (req.session.loginTarget) {
-                    redirectUrl = req.session.loginTarget;
-                    delete req.session.loginTarget;
-                } else {
-                    redirectUrl = '/u/' + user.Username;
-                }
-
-                return resp.json( { RedirectTo: redirectUrl } );
-            });
-        }) (req, resp, next);
+    app.get('/login', function (req, resp) {
+        resp.render('login');
     });
+
+    app.get('/user', function (req, resp) {
+        resp.send('Hello ' + JSON.stringify(req.user) + 'session' +  JSON.stringify(req.session));
+    });
+
+    app.post('/api/user/login',
+        passport.authenticate('local-login'),
+        function(req, res) {
+            res.status(200).end();
+        });
 };
 
 const getUserFromCacheByAuthId = function(authId) {
@@ -127,12 +129,11 @@ const getUserFromCacheByAuthId = function(authId) {
 };
 
 const setUserToCacheByAuthId = function(cachableUser) {
-    return loginCache.set( "user-by-auth" + cachableUser.authId, cachableUser);
+    return loginCache.set( "user-by-auth" + cachableUser.AuthentcationId, cachableUser);
 };
 
 const createAuthedCachableUser = function(user, db) {
     let createPromise = new Promise((resolve, reject) => {
-
         if (!user.AuthentictionTokens) {
             user.AuthentictionTokens = [];
         }
@@ -140,9 +141,10 @@ const createAuthedCachableUser = function(user, db) {
         let authId = addAuthenticationIdToUser(user);
         let cachableUser = createAuthenticatedCachableUser(authId, user);
 
-        db.users.save(user, function(err, saved) {
-            if (err || !saved) {
-                reject(err);
+        db.users.save(user).then(function(user) {
+            if (!user) {
+
+                reject('Problem saveing user');
             } else {
                 resolve(cachableUser);
             }
@@ -159,15 +161,14 @@ const createAuthenticatedCachableUser = function(selectedAuthId, user) {
         fullName: user.fullName,
         isAdmin: user.isAdmin,
         accountType: user.accountType,
-        authId: selectedAuthId
+        AuthentcationId: selectedAuthId
     };
-
     return cachableUser;
 };
 
 const addAuthenticationIdToUser = function(user) {
-    let expireDate = new Date().addDays(30);
-    let authentcationId = uuid.v1();
+
+    let authentcationId = uuid.v4();
 
     if (!user.AuthentictionTokens) {
         user.AuthentictionTokens = [];
@@ -175,7 +176,6 @@ const addAuthenticationIdToUser = function(user) {
         user.AuthentictionTokens = [];
     }
 
-    user.AuthentictionTokens.push({ AuthentcationId: authentcationId, Expires: expireDate });
-
+    user.AuthentictionTokens.push({ AuthentcationId: authentcationId, Expires: moment().add(30, 'days').toString() });
     return authentcationId;
 };

@@ -82,7 +82,7 @@ module.exports = function(app) {
         }
 
         let db = mongoDb('users');
-
+        console.log(createUserRequest.password);
         let salt = bcrypt.genSaltSync(saltRounds);
         let passwordHash = bcrypt.hashSync(createUserRequest.password, salt);
         db.users.findAndModify({

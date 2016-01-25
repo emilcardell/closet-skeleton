@@ -47,8 +47,6 @@ module.exports = function(app) {
                 emailAuthId: uuid.v4()
             };
             config.adminEmails.forEach((email) => {
-                console.log(newUser.emailKey);
-                console.log(email);
                 if (newUser.emailKey === email) {
                     newUser.isAdmin = true;
                 }

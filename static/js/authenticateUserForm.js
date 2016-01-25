@@ -156,12 +156,12 @@ const AuthenticateUserForm = React.createClass({
               <ValidationMessage validationResult={this.state.validationResult} inputName="fullName"></ValidationMessage>
 
               <label htmlFor="password">Password</label>
-              <input className={ ValidationClassHelper("u-full-width", 'email', this.state.validationResult) } type="password" placeholder="Password goes here." id="password" onChange={this.handleFieldChange} value={this.state.password} required />
+              <input className={ ValidationClassHelper("u-full-width", 'password', this.state.validationResult) } type="password" placeholder="Password goes here." id="password" onChange={this.handleFieldChange} value={this.state.password} required />
               { passwordMessage }
               <ValidationMessage validationResult={this.state.validationResult} inputName="password" ></ValidationMessage>
 
               <label htmlFor="passwordVerification">Verify password</label>
-              <input className={ ValidationClassHelper("u-full-width", 'email', this.state.validationResult) } type="password" placeholder="Check password again." id="passwordVerification" onChange={this.handleFieldChange} value={this.state.passwordVerification} required />
+              <input className={ ValidationClassHelper("u-full-width", 'passwordVerification', this.state.validationResult) } type="password" placeholder="Check password again." id="passwordVerification" onChange={this.handleFieldChange} value={this.state.passwordVerification} required />
               <ValidationMessage validationResult={this.state.validationResult} inputName="passwordVerification"></ValidationMessage>
 
               <input className="button-primary u-full-width" type="submit" value="Submit" />
