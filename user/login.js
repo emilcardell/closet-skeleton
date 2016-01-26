@@ -7,15 +7,15 @@ const NodeCache = require( "node-cache" );
 const loginCache = new NodeCache( { stdTTL: 60, checkperiod: 120 } );
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-//const config = require('../config.js');
-//const session = require('express-session');
-//const MongoDBStore = require('connect-mongodb-session')(session);
+const config = require('../config.js');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const moment = require('moment');
 
 module.exports = function(app) {
-/*
+
     let mongoStore = new MongoDBStore({
-        uri: config.mongoConnection,
+        uri: config.mongoConnection + 'loginsession',
         collection: 'passport-sessions'
     });
 
@@ -23,18 +23,16 @@ module.exports = function(app) {
         logger.error(error);
     });
 
-    app.use(session({ secret: 'ilovescotchscotchyscotchscotch', cookie: { secure: false } })); // session secret
-    app.use(passport.initialize());
-    app.use(passport.session()); // persistent login sessions
-
-
     app.use(session({
-        secret: 'This is a secret',
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
-        }
-    }));*/
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true,
+        store: mongoStore,
+        cookie: { maxAge: 1000 * 60 * 60 * 24 * 30 } // 30 days }
+    }));
 
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     let localStrategy = new LocalStrategy({
         usernameField: 'email',
@@ -57,7 +55,6 @@ module.exports = function(app) {
 
                         createAuthedCachableUser(user, db).then((cachableUser) => {
                             setUserToCacheByAuthId(cachableUser);
-                            console.log('')
                             return done(null, cachableUser);
                         }, (err) => {
                             logger.err(err);
@@ -80,28 +77,25 @@ module.exports = function(app) {
     });
 
     passport.deserializeUser(function(id, done) {
-        console.log('deserializeUser');
         let cachedValue = getUserFromCacheByAuthId(id);
-
         if (cachedValue) {
             return done(null, cachedValue);
         } else {
             let db = mongoDb('users');
-            db.users.findOne({ 'AuthentictionTokens.AuthentcationId': id, isAuthenticated: true, isDeleted: false })
+            db.users.findOne({ "AuthentictionTokens": { "$elemMatch": { "AuthentcationId": id } }, isAuthenticated: true, isDeleted: false })
             .then((user) => {
                 if (user) {
-                    if (!user.AuthentictionTokens) {
-                        return done(null, false, { message: 'Authentcation tolken not found.' });
-                    }
-                    user.AuthentictionTokens.forEach((token) => {
-                        if (token.AuthentcationId === id) {
-                            let authId = addAuthenticationIdToUser(user);
-                            let cachableUser = createAuthenticatedCachableUser(authId, user);
-                            setUserToCacheByAuthId(cachableUser);
-                            return done(null, cachableUser);
-                        }
+                    let currentToken = user.AuthentictionTokens.find((token) => {
+                        return token.AuthentcationId === id;
                     });
-                    return done(null, false, { message: 'Authentcation tolken not found.' });
+
+                    if (!moment().isBefore(currentToken.Expires)) {
+                        return done(null, false, { status: 400 });
+                    }
+
+                    let cachableUser = createAuthenticatedCachableUser(id, user);
+                    setUserToCacheByAuthId(cachableUser);
+                    return done(null, cachableUser);
                 }
                 return done(null, false, { status: 400 });
             });
@@ -111,10 +105,6 @@ module.exports = function(app) {
 
     app.get('/login', function (req, resp) {
         resp.render('login');
-    });
-
-    app.get('/user', function (req, resp) {
-        resp.send('Hello ' + JSON.stringify(req.user) + 'session' +  JSON.stringify(req.session));
     });
 
     app.post('/api/user/login',

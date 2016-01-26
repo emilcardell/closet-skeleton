@@ -53,14 +53,14 @@ const LoginForm = React.createClass({
 
         fetch('/api/user/login', {
             method: 'post',
+            credentials: 'same-origin',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(loginModel)
         }).then((response) => {
-
-            if (response.status === 404) {
+            if (response.status === 404 || response.status === 401) {
                 this.setState({
                     showLoginNotAccepted: true
                 });
@@ -69,14 +69,12 @@ const LoginForm = React.createClass({
 
             if (response.status !== 200) {
                 this.setState({
-                    showServerError: true
+                    showServerErrorMessage: true
                 });
                 return;
             }
-            alert('login successfull');
-            this.setState({
-                showThankYouMessage: true
-            });
+
+            window.location.href = '/startpage';
         }).catch(() => {
             this.setState({
                 showServerErrorMessage: true
@@ -90,7 +88,7 @@ const LoginForm = React.createClass({
         }
 
         let loginNotAcceptedMessage = '';
-        if (this.state.showServerErrorMessage) {
+        if (this.state.showLoginNotAccepted) {
             loginNotAcceptedMessage = <div className="server-error-messge">Wrong e-mail or password. Do you have capslock on?</div>;
         }
 
