@@ -3,6 +3,7 @@ import CreateUserForm from '/js/createUserForm';
 import AuthenticateUserForm from '/js/authenticateUserForm';
 import LoginForm from '/js/loginForm';
 import ReactDOM from 'react-dom';
+import ResetPassword from '/js/resetPassword';
 
 if ( document.getElementById('createUserForm')) {
     ReactDOM.render(
@@ -22,5 +23,12 @@ if ( document.getElementById('loginForm')) {
     ReactDOM.render(
      <LoginForm />,
      document.getElementById('loginForm')
+    );
+}
+
+if ( document.getElementById('resetPassword')) {
+    ReactDOM.render(
+     <ResetPassword />,
+     document.getElementById('resetPassword')
     );
 }
