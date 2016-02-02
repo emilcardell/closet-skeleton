@@ -25,7 +25,8 @@ const ResetPassword = React.createClass({
             validationResult: {},
             showThankYouMessage: false,
             showForm: true,
-            showServerErrorMessage: false
+            showServerErrorMessage: false,
+            showNotFoundMessage: false
         };
     },
     handleEmailChange(event) {
@@ -46,19 +47,27 @@ const ResetPassword = React.createClass({
             return;
         }
 
-        fetch('/api/user/resetPassword', {
+        fetch('/api/user/requestResetPassword', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(resetPasswordRules)
+            body: JSON.stringify(resetModel)
         }).then((response) => {
+
+            if (response.status === 404) {
+                this.setState({
+                    showNotFoundMessage: true
+                });
+                return;
+            }
 
             if (response.status !== 200) {
                 this.setState({
                     showServerErrorMessage: true
                 });
+                return;
             }
 
             this.setState({
@@ -73,12 +82,16 @@ const ResetPassword = React.createClass({
     render() {
 
         if (this.state.showThankYouMessage) {
-            return (<div className="thank-you-message">Thank you for registering for our service.</div>);
+            return (<div className="thank-you-message">An e-mail will be sent to you shortly with further instructions.</div>);
         }
 
         let serverErrorMessage = '';
         if (this.state.showServerErrorMessage) {
-            serverErrorMessage = <div className="server-error-messge">Something went wrong on the server please try again later.</div>;
+            serverErrorMessage = <div className="server-error-messge">Something went wrong.</div>;
+        }
+
+        if (this.state.showNotFoundMessage) {
+            serverErrorMessage = <div className="server-error-messge">E-mail could not be found.</div>;
         }
 
         return (<form onSubmit={this.handleSubmit} noValidate>
