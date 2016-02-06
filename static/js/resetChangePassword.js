@@ -2,8 +2,8 @@ import React from 'react';
 import iz from 'emilcardell/iz';
 import are from 'emilcardell/iz/src/are';
 import 'github/fetch';
-import ValidationMessage from '/js/validationMessage';
-import ValidationClassHelper from '/js/ValidationClassHelper';
+import ValidationMessage from '/static/js/validationMessage';
+import ValidationClassHelper from '/static/js/ValidationClassHelper';
 
 const ResetChangePassword = React.createClass({
     getInitialState() {

@@ -8,6 +8,10 @@ const config = require('../config.js');
 
 module.exports = function(app) {
 
+    app.get('/', (req, resp) => {
+        resp.render('register');
+    });
+
     app.post('/api/user/createUser', (req, resp) => {
         let createUserRequest = req.body;
 

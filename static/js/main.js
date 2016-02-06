@@ -1,10 +1,10 @@
 import React from 'react';
-import CreateUserForm from '/js/createUserForm';
-import AuthenticateUserForm from '/js/authenticateUserForm';
-import LoginForm from '/js/loginForm';
+import CreateUserForm from '/static/js/createUserForm';
+import AuthenticateUserForm from '/static/js/authenticateUserForm';
+import LoginForm from '/static/js/loginForm';
 import ReactDOM from 'react-dom';
-import ResetPassword from '/js/resetPassword';
-import ResetChangePassword from '/js/resetChangePassword';
+import ResetPassword from '/static/js/resetPassword';
+import ResetChangePassword from '/static/js/resetChangePassword';
 
 if ( document.getElementById('createUserForm')) {
     ReactDOM.render(
