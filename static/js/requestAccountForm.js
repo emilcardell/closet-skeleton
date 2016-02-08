@@ -5,7 +5,7 @@ import 'github/fetch';
 import ValidationMessage from '/static/js/validationMessage';
 import ValidationClassHelper from '/static/js/ValidationClassHelper';
 
-const createUserRules = {
+const requestAccountRules = {
     'email': [
         {
             'rule': 'email',
@@ -24,7 +24,7 @@ const createUserRules = {
     ]
 };
 
-const CreateUserForm = React.createClass({
+const RequestAccountForm = React.createClass({
     getInitialState() {
         return {
             email: '',
@@ -37,15 +37,12 @@ const CreateUserForm = React.createClass({
     },
     componentDidMount() {
         $(this.refs.selectAccountType).material_select();
-        $(this.refs.inputEl).on('change', this._onChange);
+        $(this.refs.selectAccountType).on('change', this._onChange);
     },
     _onChange(e) {
         this.setState({
-            value: e.target.value
+            accountType: e.target.value
         });
-        if (this.props.onChange) {
-            this.props.onChange(e);
-        }
     },
     handleEmailChange(event) {
         this.setState( { email: event.target.value } );
@@ -60,7 +57,7 @@ const CreateUserForm = React.createClass({
             accountType: this.state.accountType
         };
 
-        let areRules = are(createUserRules);
+        let areRules = are(requestAccountRules);
 
         if (!areRules.validFor(createModel)) {
             this.setState({
@@ -69,7 +66,7 @@ const CreateUserForm = React.createClass({
             return;
         }
 
-        fetch('/api/user/createUser', {
+        fetch('/api/account/requestAccount', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
@@ -135,4 +132,4 @@ const CreateUserForm = React.createClass({
     }
 });
 
-export default CreateUserForm;
+export default RequestAccountForm;
