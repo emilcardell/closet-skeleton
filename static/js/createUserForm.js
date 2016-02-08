@@ -35,6 +35,18 @@ const CreateUserForm = React.createClass({
             showServerErrorMessage: false
         };
     },
+    componentDidMount() {
+        $(this.refs.selectAccountType).material_select();
+        $(this.refs.inputEl).on('change', this._onChange);
+    },
+    _onChange(e) {
+        this.setState({
+            value: e.target.value
+        });
+        if (this.props.onChange) {
+            this.props.onChange(e);
+        }
+    },
     handleEmailChange(event) {
         this.setState( { email: event.target.value } );
     },
@@ -92,22 +104,33 @@ const CreateUserForm = React.createClass({
             serverErrorMessage = <div className="server-error-messge">Something went wrong on the server please try again later.</div>;
         }
 
-        return (<form onSubmit={this.handleSubmit} noValidate>
-          <div className="row">
-              <label htmlFor="emailField">Your email</label>
-              <input className={ ValidationClassHelper("u-full-width", 'email', this.state.validationResult) } type="email" placeholder="Enter your e-mail here." id="emailField" onChange={this.handleEmailChange} value={this.state.email} required />
-              <ValidationMessage validationResult={this.state.validationResult} inputName="email" text="You have to enter a valid e-mailaddress."></ValidationMessage>
+        return (<form onSubmit={this.handleSubmit} className="col s12" noValidate>
 
-              <label htmlFor="exampleRecipientInput">Type of account</label>
-              <select className="u-full-width" id="accountTypeSelect" onChange={this.handleAccountTypeChange} value={this.state.accountType}>
+             <div className="row">
+                 <div className="input-field col s12">
+
+                      <input className={ ValidationClassHelper("validate", 'email', this.state.validationResult) } type="email" placeholder="Enter your e-mail here." id="emailField" onChange={this.handleEmailChange} value={this.state.email} required />
+                      <label htmlFor="emailField" className="active">Your email</label>
+                      <ValidationMessage validationResult={this.state.validationResult} inputName="email" text="You have to enter a valid e-mailaddress."></ValidationMessage>
+                </div>
+              </div>
+
+              <div className="row">
+              <div className="input-field col s12">
+                               <label htmlFor="accountTypeSelect" className="active">Type of account</label>
+              <select className="u-full-width" id="accountTypeSelect" ref="selectAccountType" onChange={this.handleAccountTypeChange} value={this.state.accountType}>
                <option value="Option 1">Option 1</option>
                <option value="Option 2">Option 2</option>
                <option value="Option 3">Option 3</option>
              </select>
 
-              <input className="button-primary u-full-width" type="submit" value="Submit" />
+            </div>
+            </div>
+
+              <div className="input-field col s12">
+              <button className="btn-flat waves-effect waves-light lime" type="submit" value="Submit">Submit</button>
               { serverErrorMessage }
-          </div>
+            </div>
         </form>);
     }
 });
