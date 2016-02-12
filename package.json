@@ -46,6 +46,7 @@
       "github/fetch": "github:github/fetch@^0.10.1",
       "react": "npm:react@^0.14.3",
       "react-dom": "npm:react-dom@^0.14.3",
+      "react-redux": "npm:react-redux@^4.4.0",
       "redux": "npm:redux@^3.3.1",
       "underscore": "npm:underscore@^1.8.3"
     },
