@@ -23,11 +23,11 @@ module.exports = function(app) {
         resp.json({ message: 'delete' });
     });
 
-    app.get('/authenticateUser/:authtid', (req, resp) => {
-        resp.render('authenticateUser', {});
+    app.get('/createOrganisation/:authtid', (req, resp) => {
+        resp.render('createOrganisation', {});
     });
 
-    app.get('/api/user/authenticateUser/:authtid', (req, resp) => {
+    app.get('/api/user/createOrganisation/:authtid', (req, resp) => {
         let db = mongoDb('users');
         db.users.find({ emailAuthId: req.params.authtid, isAuthenticated: false, isDeleted: false })
         .then(function(doc) {
@@ -38,10 +38,10 @@ module.exports = function(app) {
         });
     });
 
-    app.post('/api/user/authenticateUser', (req, resp) => {
+    app.post('/api/organisation/createOrganisation', (req, resp) => {
         let createUserRequest = req.body;
 
-        let authenticateUserRules = {
+        let createOrganisationRules = {
             'emailAuthId': [
                 {
                     'rule': 'required',
@@ -72,7 +72,7 @@ module.exports = function(app) {
             ]
         };
 
-        let areRules = are(authenticateUserRules);
+        let areRules = are(createOrganisationRules);
 
         if (!areRules.validFor(createUserRequest)) {
             let logErrors = areRules.getInvalidFields();

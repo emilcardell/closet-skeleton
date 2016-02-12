@@ -1,6 +1,6 @@
 import React from 'react';
 import RequestAccountForm from '/static/js/requestAccountForm';
-import AuthenticateUserForm from '/static/js/authenticateUserForm';
+import CreateOrganisationForm from '/static/js/createOrganisationForm';
 import LoginForm from '/static/js/loginForm';
 import ReactDOM from 'react-dom';
 import ResetPassword from '/static/js/resetPassword';
@@ -13,10 +13,10 @@ if ( document.getElementById('requestAccountForm')) {
     );
 }
 
-if ( document.getElementById('authenticateUserForm')) {
+if ( document.getElementById('createOrganisationForm')) {
     ReactDOM.render(
-     <AuthenticateUserForm />,
-     document.getElementById('authenticateUserForm')
+     <CreateOrganisationForm />,
+     document.getElementById('createOrganisationForm')
     );
 }
 

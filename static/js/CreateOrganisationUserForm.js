@@ -7,7 +7,7 @@ import ValidationClassHelper from '/static/js/ValidationClassHelper';
 
 
 
-const AuthenticateUserForm = React.createClass({
+const CreateOrganisationUserForm = React.createClass({
     getInitialState() {
         return {
             fullName: null,
@@ -28,7 +28,7 @@ const AuthenticateUserForm = React.createClass({
     handleSubmit(event) {
         event.preventDefault();
 
-        let authenticateUserRules = {
+        let createOrganisationRules = {
             'fullName': [
                 {
                     'rule': 'required',
@@ -64,7 +64,7 @@ const AuthenticateUserForm = React.createClass({
             ]
         };
 
-        let areRules = are(authenticateUserRules);
+        let areRules = are(createOrganisationRules);
         let modelToSave = { fullName: this.state.fullName, password: this.state.password, passwordVerification: this.state.passwordVerification };
         if (!areRules.validFor(modelToSave)) {
             this.setState({
@@ -75,7 +75,7 @@ const AuthenticateUserForm = React.createClass({
 
         modelToSave.emailAuthId = this.state.emailAuthId;
 
-        fetch('/api/user/authenticateUser', {
+        fetch('/api/user/createOrganisation', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
@@ -99,7 +99,7 @@ const AuthenticateUserForm = React.createClass({
         let paths = window.location.pathname.split("/");
         let emailAuthId = paths[paths.length-1];
 
-        fetch('/api/user/authenticateUser/' + emailAuthId).then((response) => {
+        fetch('/api/user/createOrganisation/' + emailAuthId).then((response) => {
             if (response.status !== 200) {
                 this.setState({
                     showUserNotFound: true,
@@ -164,11 +164,11 @@ const AuthenticateUserForm = React.createClass({
               <input className={ ValidationClassHelper("u-full-width", 'passwordVerification', this.state.validationResult) } type="password" placeholder="Check password again." id="passwordVerification" onChange={this.handleFieldChange} value={this.state.passwordVerification} required />
               <ValidationMessage validationResult={this.state.validationResult} inputName="passwordVerification"></ValidationMessage>
 
-              <input className="button-primary u-full-width" type="submit" value="Submit" />
+              <button className="btn-flat waves-effect waves-light lime" type="submit">Next step</button>
               { serverErrorMessage }
           </div>
         </form>);
     }
 });
 
-export default AuthenticateUserForm;
+export default CreateOrganisationUserForm;

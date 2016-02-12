@@ -60,7 +60,7 @@ module.exports = function(app) {
             to: newAccountRequest.email,
             subject: 'Authenticate user',
             template: 'authenticateUser',
-            context: { url: config.hostUrl + '/authenticateUser/' + newAccountRequest.emailAuthId }
+            context: { url: config.hostUrl + '/createOrganisation/' + newAccountRequest.emailAuthId }
         });
 
         resp.status(200).end();
