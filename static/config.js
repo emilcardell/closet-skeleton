@@ -8,8 +8,8 @@ System.config({
     ]
   },
   paths: {
-    "github:*": "jspm_packages/github/*",
-    "npm:*": "jspm_packages/npm/*"
+    "github:*": "/static/jspm_packages/github/*",
+    "npm:*": "/static/jspm_packages/npm/*"
   },
 
   map: {

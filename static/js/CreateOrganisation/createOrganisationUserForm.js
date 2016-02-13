@@ -4,8 +4,7 @@ import are from 'emilcardell/iz/src/are';
 import 'github/fetch';
 import ValidationMessage from '/static/js/validationMessage';
 import ValidationClassHelper from '/static/js/ValidationClassHelper';
-
-
+import { connect } from 'react-redux';
 
 const CreateOrganisationUserForm = React.createClass({
     getInitialState() {
@@ -27,6 +26,9 @@ const CreateOrganisationUserForm = React.createClass({
     },
     handleSubmit(event) {
         event.preventDefault();
+
+        this.props.showInvoicingForm();
+        return;
 
         let createOrganisationRules = {
             'fullName': [
@@ -171,4 +173,19 @@ const CreateOrganisationUserForm = React.createClass({
     }
 });
 
-export default CreateOrganisationUserForm;
+function mapDispatchToProps(dispatch) {
+    return {
+        showInvoicingForm: () => dispatch({ type: 'LOGIN_INFO_OK' })
+    };
+}
+
+const mapStateToProps = (state, ownProps) => {
+    return {};
+};
+
+const SmartCreateOrganisationUserForm = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateOrganisationUserForm)
+
+export default SmartCreateOrganisationUserForm;

@@ -7,7 +7,7 @@ import ResetPassword from '/static/js/resetPassword';
 import ResetChangePassword from '/static/js/resetChangePassword';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import createOrgApp from '/static/js/CreateOrganisation/reducers';
+import createOrgApp from '/static/js/CreateOrganisation/reducers/index.js';
 
 let createOrgStore = createStore(createOrgApp);
 
