@@ -2,7 +2,7 @@
   "name": "closet-skeleton",
   "version": "1.0.0",
   "description": "A skeleton site with login",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -48,6 +48,7 @@
       "react-dom": "npm:react-dom@^0.14.3",
       "react-redux": "npm:react-redux@^4.4.0",
       "redux": "npm:redux@^3.3.1",
+      "redux-promise-middleware": "npm:redux-promise-middleware@^2.3.3",
       "underscore": "npm:underscore@^1.8.3"
     },
     "devDependencies": {

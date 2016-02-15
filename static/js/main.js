@@ -6,10 +6,20 @@ import ReactDOM from 'react-dom';
 import ResetPassword from '/static/js/resetPassword';
 import ResetChangePassword from '/static/js/resetChangePassword';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import createOrgApp from '/static/js/CreateOrganisation/reducers/index.js';
+import promiseMiddleware from 'redux-promise-middleware';
 
-let createOrgStore = createStore(createOrgApp);
+
+
+
+const finalCreateStore = compose(
+    applyMiddleware(promiseMiddleware()),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )(createStore);
+
+const createOrgStore = finalCreateStore(createOrgApp, {});
+
 
 if ( document.getElementById('requestAccountForm')) {
     ReactDOM.render(

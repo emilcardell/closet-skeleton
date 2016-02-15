@@ -22,6 +22,7 @@ System.config({
     "react-dom": "npm:react-dom@0.14.6",
     "react-redux": "npm:react-redux@4.4.0",
     "redux": "npm:redux@3.3.1",
+    "redux-promise-middleware": "npm:redux-promise-middleware@2.3.3",
     "traceur": "github:jmcriffey/bower-traceur@0.0.92",
     "traceur-runtime": "github:jmcriffey/bower-traceur-runtime@0.0.92",
     "underscore": "npm:underscore@1.8.3",
@@ -120,6 +121,9 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "stream-browserify": "npm:stream-browserify@1.0.0",
       "string_decoder": "npm:string_decoder@0.10.31"
+    },
+    "npm:redux-promise-middleware@2.3.3": {
+      "redux": "npm:redux@3.3.1"
     },
     "npm:redux@3.3.1": {
       "lodash": "npm:lodash@4.3.0",
